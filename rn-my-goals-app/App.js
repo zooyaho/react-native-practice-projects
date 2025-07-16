@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   ScrollView,
+  FlatList,
 } from "react-native";
 
 export default function App() {
@@ -18,7 +19,10 @@ export default function App() {
 
   const addGoalHandler = () => {
     console.log(enteredGoalText);
-    setCoursGoals((prevCourseGoals) => [...prevCourseGoals, enteredGoalText]);
+    setCoursGoals((prevCourseGoals) => [
+      ...prevCourseGoals,
+      { id: Math.random().toString(), text: enteredGoalText },
+    ]);
     // setEnteredGoalText(""); // 초기화
   };
 
@@ -35,7 +39,7 @@ export default function App() {
       </View>
       <View style={styles.goalsContainer}>
         {/* ScrollView의 사용 가능한 높이를 제한하기 위해 View로 차지할 높이를 설정 */}
-        <ScrollView alwaysBounceVertical={false}>
+        {/* <ScrollView alwaysBounceVertical={false}>
           {courseGoals
             .slice()
             .reverse()
@@ -44,7 +48,17 @@ export default function App() {
                 <Text style={styles.goalText}>{goal}</Text>
               </View>
             ))}
-        </ScrollView>
+        </ScrollView> */}
+        <FlatList
+          data={courseGoals}
+          renderItem={({ item }) => (
+            <View style={styles.goalItem}>
+              <Text style={styles.goalText}>{item.text}</Text>
+            </View>
+          )}
+          keyExtractor={(item, index) => item.id}
+          alwaysBounceVertical={false}
+        />
       </View>
     </View>
   );
