@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { TextInput, Button, View, StyleSheet, Modal } from "react-native";
+import {
+  TextInput,
+  Button,
+  View,
+  StyleSheet,
+  Modal,
+  Image,
+} from "react-native";
 
 const GoalInput = ({ onAddGoal, visible, onCancel }) => {
   const [enteredGoalText, setEnteredGoalText] = useState("");
@@ -24,6 +31,10 @@ const GoalInput = ({ onAddGoal, visible, onCancel }) => {
   return (
     <Modal visible={visible} animationType="slide">
       <View style={styles.inputContainer}>
+        <Image
+          source={require("../assets/images/goal.png")}
+          style={styles.image}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Your course goal!"
@@ -31,11 +42,19 @@ const GoalInput = ({ onAddGoal, visible, onCancel }) => {
           onChangeText={goalInputHandler}
         />
         <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <Button title="Add Goal" onPress={addGoalHandler} />
+          <View style={styles.cancelButton}>
+            <Button
+              title="Cancel"
+              onPress={cancelGoalHandler}
+              color="steelblue"
+            />
           </View>
-          <View style={styles.button}>
-            <Button title="Cancel" onPress={cancelGoalHandler} />
+          <View style={styles.addButton}>
+            <Button
+              title="Add Goal"
+              onPress={addGoalHandler}
+              color="powderblue"
+            />
           </View>
         </View>
       </View>
@@ -46,13 +65,20 @@ const GoalInput = ({ onAddGoal, visible, onCancel }) => {
 const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
+    gap: 16,
     // flexDirection: "column", // 기본값이 column이므로 생략 가능
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
-    marginBottom: 24,
-    borderBottomColor: "#cccccc",
-    borderBottomWidth: 1,
+    padding: 24,
+    // marginBottom: 24,
+    // borderBottomColor: "#cccccc",
+    // borderBottomWidth: 1,
+    backgroundColor: "powderblue",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 20,
   },
   textInput: {
     borderColor: "#cccccc",
@@ -60,14 +86,24 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
     borderRadius: 6,
+    backgroundColor: "white",
   },
   buttonContainer: {
     marginTop: 16,
     flexDirection: "row",
   },
-  button: {
+  addButton: {
     width: 100,
     marginHorizontal: 8,
+    borderRadius: 6,
+    backgroundColor: "steelblue",
+  },
+  cancelButton: {
+    width: 100,
+    marginHorizontal: 8,
+    borderRadius: 6,
+    borderColor: "steelblue",
+    borderWidth: 1,
   },
 });
 
