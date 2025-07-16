@@ -12,13 +12,23 @@ import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
 
 export default function App() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [courseGoals, setCoursGoals] = useState([]);
+
+  const openModalHandler = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModalHandler = () => {
+    setIsModalVisible(false);
+  };
 
   const addGoalHandler = (enteredGoalText) => {
     setCoursGoals((prevCourseGoals) => [
       ...prevCourseGoals,
       { id: Math.random().toString(), text: enteredGoalText },
     ]);
+    closeModalHandler(); // 목표 추가 후 모달 닫기
   };
 
   const deleteGoalHandler = (deleteGoalId) => {
@@ -29,7 +39,16 @@ export default function App() {
 
   return (
     <View style={styles.appContainer}>
-      <GoalInput onAddGoal={addGoalHandler} />
+      <Button
+        title="Add New Goal"
+        color="powderblue"
+        onPress={openModalHandler}
+      />
+      <GoalInput
+        onAddGoal={addGoalHandler}
+        visible={isModalVisible}
+        onCancel={closeModalHandler}
+      />
       <View style={styles.goalsContainer}>
         {/* ScrollView의 사용 가능한 높이를 제한하기 위해 View로 차지할 높이를 설정 */}
         {/* <ScrollView alwaysBounceVertical={false}>
