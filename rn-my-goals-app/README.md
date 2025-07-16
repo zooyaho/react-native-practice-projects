@@ -24,4 +24,4 @@ React Native 학습을 위해 제작한 간단한 목표 작성 앱입니다.
 
 | 메인 화면                                | 목표 입력 모달                            |
 | ---------------------------------------- | ----------------------------------------- |
-| ![](./assets/images/screenshot_main.PNG) | ![](./assets/images/screenshot_modal.png) |
+| ![](./assets/images/screenshot_main.PNG) | ![](./assets/images/screenshot_modal.PNG) |
