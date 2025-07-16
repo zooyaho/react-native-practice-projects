@@ -6,7 +6,6 @@ const GoalInput = ({ onAddGoal }) => {
 
   const goalInputHandler = (enteredText) => {
     setEnteredGoalText(enteredText);
-    setEnteredGoalText(""); // 초기화
   };
 
   const addGoalHandler = () => {
