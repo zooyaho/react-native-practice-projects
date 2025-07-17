@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
     marginHorizontal: 24,
     borderRadius: 8,
-    backgroundColor: "#4e0329",
+    backgroundColor: "#3b021f",
     elevation: 4, // Android shadow
     shadowColor: "black", // iOS shadow
     shadowOffset: { width: 0, height: 2 }, // iOS 그림자 위치
