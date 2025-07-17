@@ -1,15 +1,46 @@
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Alert } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
+import { useState } from "react";
 
 /**
  * 시작 화면
  * - 맞추어야할 숫자를 입력받는 화면
  * - 숫자 입력 후 게임 시작 버튼을 누르면 게임 화면으로 이동
  */
-const StartGameScreen = () => {
+const StartGameScreen = ({ onPickNumber }) => {
+  const [enteredNumber, setEnteredNumber] = useState(""); // 숫자 입력 상태 관리
+
+  const inputChangeHandler = (inputText) => {
+    setEnteredNumber(inputText);
+  };
+
+  const resetInputHandler = () => {
+    setEnteredNumber("");
+  };
+
+  const confirmInputHandler = () => {
+    const chosenNumber = parseInt(enteredNumber);
+
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+      // 유효하지 않은 숫자 처리
+      Alert.alert(
+        "⚠️ 유효하지 않는 숫자",
+        "숫자를 1에서 99 사이로 입력해주세요.",
+        [{ text: "확인", style: "destructive", onPress: resetInputHandler }]
+      );
+      return;
+    }
+    // 숫자 입력이 유효한 경우 게임 시작 로직 처리
+    console.log("게임 시작:", chosenNumber);
+    resetInputHandler(""); // 입력 필드 초기화
+    onPickNumber(chosenNumber); // 부모 컴포넌트에 숫자 전달
+  };
+
   return (
     <View style={styles.inputContainer}>
       <TextInput
+        value={enteredNumber}
+        onChangeText={inputChangeHandler}
         style={styles.numberInput}
         maxLength={2}
         keyboardType="number-pad"
@@ -22,10 +53,14 @@ const StartGameScreen = () => {
       />
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Reset</PrimaryButton>
+          <PrimaryButton onPressHandler={resetInputHandler}>
+            Reset
+          </PrimaryButton>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Confirm</PrimaryButton>
+          <PrimaryButton onPressHandler={confirmInputHandler}>
+            Confirm
+          </PrimaryButton>
         </View>
       </View>
     </View>
