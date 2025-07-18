@@ -12,6 +12,7 @@ import GameOverScreen from "./screens/GameOverScreen";
 export default function App() {
   const [userNumber, setUserNumber] = useState(null); // 유저가 입력한 숫자 상태 관리
   const [isGameOver, setIsGameOver] = useState(true); // 게임 종료 상태 관리
+  const [guessRoundsCount, setGuessRoundsCount] = useState(0); // 추측 라운드 수 관리
 
   const [isFontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
@@ -27,8 +28,20 @@ export default function App() {
     setIsGameOver(false); // 게임 시작 상태로 변경
   };
 
-  const gameOverHandler = () => {
+  /**
+   * 게임 종료 핸들러
+   * - 추측 라운드 수를 상태에 저장
+   * - 게임 종료 상태로 변경
+   */
+  const gameOverHandler = (numberOfRounds) => {
+    setGuessRoundsCount(numberOfRounds); // 추측 라운드 수 업데이트
     setIsGameOver(true); // 게임 종료 상태 업데이트
+  };
+
+  const startNewGameHandler = () => {
+    setUserNumber(null); // 유저 숫자 초기화
+    setGuessRoundsCount(0); // 추측 라운드 수 초기화
+    setIsGameOver(true); // 게임 종료 상태로 변경
   };
 
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
@@ -40,7 +53,13 @@ export default function App() {
   }
 
   if (isGameOver && userNumber) {
-    screen = <GameOverScreen />;
+    screen = (
+      <GameOverScreen
+        roundsNumber={guessRoundsCount}
+        userNumber={userNumber}
+        onStartNewGame={startNewGameHandler}
+      />
+    );
   }
 
   return (

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, FlatList } from "react-native";
 import { useState, useEffect, useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -7,6 +7,7 @@ import NumberContainer from "../components/game/NumberContainer";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import CardLayout from "../components/ui/CardLayout";
 import InstructionText from "../components/ui/InstructionText";
+import GuessLogItem from "../components/game/GuessLogItem";
 
 /**
  * 게임 화면
@@ -41,6 +42,7 @@ const GameScreen = ({ userNumber, onGameOver }) => {
     [userNumber]
   ); // 초기 추측 숫자 생성
   const [currentGuess, setCurrentGuess] = useState(initialGuess); // 현재 핸드폰이 추측한 숫자 상태 관리
+  const [guessRounds, setGuessRounds] = useState([initialGuess]); // 추측 라운드 기록
 
   /**
    * 다음 추측 숫자 생성 함수
@@ -79,13 +81,20 @@ const GameScreen = ({ userNumber, onGameOver }) => {
       currentGuess
     );
     setCurrentGuess(newGuessNumber);
+    setGuessRounds((prevRounds) => [newGuessNumber, ...prevRounds]); // 추측 라운드 기록
   };
 
   useEffect(() => {
     if (currentGuess === userNumber) {
-      onGameOver(); // 게임 종료 처리
+      onGameOver(guessRounds.length); // 게임 종료 처리
     }
   }, [currentGuess, userNumber, onGameOver]);
+
+  useEffect(() => {
+    // 초기 범위 설정
+    minBoundary = 1;
+    maxBoundary = 100;
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -106,8 +115,21 @@ const GameScreen = ({ userNumber, onGameOver }) => {
           </View>
         </View>
       </CardLayout>
-      <View>
-        <Text>Log Rounds</Text>
+      {/* 로그 정보 */}
+      <View style={styles.listContainer}>
+        <FlatList
+          data={guessRounds}
+          renderItem={({ item, index }) => (
+            <GuessLogItem
+              guessNumber={item}
+              roundNumber={guessRounds.length - index}
+            >
+              {item}
+            </GuessLogItem>
+          )}
+          keyExtractor={(item) => item.toString()}
+          alwaysBounceVertical={false}
+        />
       </View>
     </View>
   );
@@ -125,6 +147,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+  },
+  listContainer: {
+    flex: 1,
+    padding: 16,
   },
 });
 
