@@ -1,4 +1,13 @@
-import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  useWindowDimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { useState } from "react";
 import Colors from "../constants/colors";
@@ -13,6 +22,7 @@ import InstructionText from "../components/ui/InstructionText";
  */
 const StartGameScreen = ({ onPickNumber }) => {
   const [enteredNumber, setEnteredNumber] = useState(""); // 숫자 입력 상태 관리
+  const { width, height: deviceHeight } = useWindowDimensions(); // 화면 너비 가져오기
 
   const inputChangeHandler = (inputText) => {
     setEnteredNumber(inputText);
@@ -40,45 +50,56 @@ const StartGameScreen = ({ onPickNumber }) => {
     onPickNumber(chosenNumber); // 부모 컴포넌트에 숫자 전달
   };
 
+  const marginTopDistance = deviceHeight < 400 ? 30 : 100;
+
   return (
-    <View style={styles.rootContainer}>
-      <Title>Guess My Number</Title>
-      <CardLayout>
-        <InstructionText>Enter a Number</InstructionText>
-        <TextInput
-          value={enteredNumber}
-          onChangeText={inputChangeHandler}
-          style={styles.numberInput}
-          maxLength={2}
-          keyboardType="number-pad"
-          // autoCapitalize="none" // 자동 대문자 비활성화
-          // autoComplete="off" // 자동 완성 비활성화
-          // autoFocus={true} // 화면이 열리면 자동으로 포커스
-          // autoCorrect={false} // 자동 교정 비활성화
-          // placeholder="숫자를 입력하세요"
-          // placeholderTextColor="#ddb52f" // 플레이스홀더 색상
-        />
-        <View style={styles.buttonsContainer}>
-          <View style={styles.buttonContainer}>
-            <PrimaryButton onPressHandler={resetInputHandler}>
-              Reset
-            </PrimaryButton>
-          </View>
-          <View style={styles.buttonContainer}>
-            <PrimaryButton onPressHandler={confirmInputHandler}>
-              Confirm
-            </PrimaryButton>
-          </View>
+    <ScrollView style={styles.screen}>
+      <KeyboardAvoidingView style={styles.screen} behavior="position">
+        <View style={[styles.rootContainer, { marginTop: marginTopDistance }]}>
+          <Title>Guess My Number</Title>
+          <CardLayout>
+            <InstructionText>Enter a Number</InstructionText>
+            <TextInput
+              value={enteredNumber}
+              onChangeText={inputChangeHandler}
+              style={styles.numberInput}
+              maxLength={2}
+              keyboardType="number-pad"
+              // autoCapitalize="none" // 자동 대문자 비활성화
+              // autoComplete="off" // 자동 완성 비활성화
+              // autoFocus={true} // 화면이 열리면 자동으로 포커스
+              // autoCorrect={false} // 자동 교정 비활성화
+              // placeholder="숫자를 입력하세요"
+              // placeholderTextColor="#ddb52f" // 플레이스홀더 색상
+            />
+            <View style={styles.buttonsContainer}>
+              <View style={styles.buttonContainer}>
+                <PrimaryButton onPressHandler={resetInputHandler}>
+                  Reset
+                </PrimaryButton>
+              </View>
+              <View style={styles.buttonContainer}>
+                <PrimaryButton onPressHandler={confirmInputHandler}>
+                  Confirm
+                </PrimaryButton>
+              </View>
+            </View>
+          </CardLayout>
         </View>
-      </CardLayout>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
+// const deviceHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   rootContainer: {
     flex: 1,
-    marginTop: 100,
+    // marginTop: deviceHeight < 400 ? 30 : 100,
     alignItems: "center",
   },
   numberInput: {

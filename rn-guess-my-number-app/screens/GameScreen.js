@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Alert, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 import { useState, useEffect, useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -43,6 +50,8 @@ const GameScreen = ({ userNumber, onGameOver }) => {
   ); // 초기 추측 숫자 생성
   const [currentGuess, setCurrentGuess] = useState(initialGuess); // 현재 핸드폰이 추측한 숫자 상태 관리
   const [guessRounds, setGuessRounds] = useState([initialGuess]); // 추측 라운드 기록
+
+  const { width, height } = useWindowDimensions(); // 화면 너비와 높이 가져오기
 
   /**
    * 다음 추측 숫자 생성 함수
@@ -96,9 +105,8 @@ const GameScreen = ({ userNumber, onGameOver }) => {
     maxBoundary = 100;
   }, []);
 
-  return (
-    <View style={styles.screen}>
-      <Title>Opponent's Guess</Title>
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <CardLayout>
         <InstructionText>Higher or Lower?</InstructionText>
@@ -115,6 +123,33 @@ const GameScreen = ({ userNumber, onGameOver }) => {
           </View>
         </View>
       </CardLayout>
+    </>
+  );
+
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPressHandler={() => nextGuessHandler("lower")}>
+              <Ionicons name="remove" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPressHandler={() => nextGuessHandler("higher")}>
+              <Ionicons name="add" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <Title>Opponent's Guess</Title>
+      {content}
       {/* 로그 정보 */}
       <View style={styles.listContainer}>
         <FlatList
@@ -139,10 +174,15 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 24,
+    alignItems: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonsContainerWide: {
+    flexDirection: "row",
     alignItems: "center",
   },
   buttonContainer: {
