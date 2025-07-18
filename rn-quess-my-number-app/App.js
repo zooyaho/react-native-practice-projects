@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "./constants/colors";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 import GameScreen from "./screens/GameScreen";
 import StartGameScreen from "./screens/StartGameScreen";
@@ -10,6 +12,15 @@ import GameOverScreen from "./screens/GameOverScreen";
 export default function App() {
   const [userNumber, setUserNumber] = useState(null); // 유저가 입력한 숫자 상태 관리
   const [isGameOver, setIsGameOver] = useState(true); // 게임 종료 상태 관리
+
+  const [isFontsLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  }); // 커스텀 폰트 로드
+
+  if (!isFontsLoaded) {
+    return <AppLoading />; // 폰트가 로드될 때까지 대기
+  }
 
   const pickedNumberHandler = (pickedNumber) => {
     setUserNumber(pickedNumber); // 유저가 입력한 숫자를 상태에 저장

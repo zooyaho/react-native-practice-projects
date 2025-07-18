@@ -1,7 +1,10 @@
-import { View, TextInput, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { useState } from "react";
 import Colors from "../constants/colors";
+import Title from "../components/ui/Title";
+import CardLayout from "../components/ui/CardLayout";
+import InstructionText from "../components/ui/InstructionText";
 
 /**
  * 시작 화면
@@ -38,52 +41,45 @@ const StartGameScreen = ({ onPickNumber }) => {
   };
 
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        value={enteredNumber}
-        onChangeText={inputChangeHandler}
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        // autoCapitalize="none" // 자동 대문자 비활성화
-        // autoComplete="off" // 자동 완성 비활성화
-        // autoFocus={true} // 화면이 열리면 자동으로 포커스
-        // autoCorrect={false} // 자동 교정 비활성화
-        // placeholder="숫자를 입력하세요"
-        // placeholderTextColor="#ddb52f" // 플레이스홀더 색상
-      />
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPressHandler={resetInputHandler}>
-            Reset
-          </PrimaryButton>
+    <View style={styles.rootContainer}>
+      <Title>Guess My Number</Title>
+      <CardLayout>
+        <InstructionText>Enter a Number</InstructionText>
+        <TextInput
+          value={enteredNumber}
+          onChangeText={inputChangeHandler}
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          // autoCapitalize="none" // 자동 대문자 비활성화
+          // autoComplete="off" // 자동 완성 비활성화
+          // autoFocus={true} // 화면이 열리면 자동으로 포커스
+          // autoCorrect={false} // 자동 교정 비활성화
+          // placeholder="숫자를 입력하세요"
+          // placeholderTextColor="#ddb52f" // 플레이스홀더 색상
+        />
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPressHandler={resetInputHandler}>
+              Reset
+            </PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPressHandler={confirmInputHandler}>
+              Confirm
+            </PrimaryButton>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPressHandler={confirmInputHandler}>
-            Confirm
-          </PrimaryButton>
-        </View>
-      </View>
+      </CardLayout>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    padding: 16,
+  rootContainer: {
+    flex: 1,
     marginTop: 100,
-    marginHorizontal: 24,
-    borderRadius: 8,
-    backgroundColor: Colors.primary800,
-    elevation: 4, // Android shadow
-    shadowColor: "black", // iOS shadow
-    shadowOffset: { width: 0, height: 2 }, // iOS 그림자 위치
-    shadowOpacity: 0.25, // iOS 그림자 불투명도
-    shadowRadius: 6, // iOS 그림자 번짐 정도
+    alignItems: "center",
   },
   numberInput: {
     height: 50,
