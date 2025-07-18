@@ -5,18 +5,31 @@ import Colors from "./constants/colors";
 
 import GameScreen from "./screens/GameScreen";
 import StartGameScreen from "./screens/StartGameScreen";
+import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
   const [userNumber, setUserNumber] = useState(null); // 유저가 입력한 숫자 상태 관리
+  const [isGameOver, setIsGameOver] = useState(true); // 게임 종료 상태 관리
 
   const pickedNumberHandler = (pickedNumber) => {
     setUserNumber(pickedNumber); // 유저가 입력한 숫자를 상태에 저장
+    setIsGameOver(false); // 게임 시작 상태로 변경
+  };
+
+  const gameOverHandler = () => {
+    setIsGameOver(true); // 게임 종료 상태 업데이트
   };
 
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber) {
-    screen = <GameScreen userNumber={userNumber} />;
+    screen = (
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
+    );
+  }
+
+  if (isGameOver && userNumber) {
+    screen = <GameOverScreen />;
   }
 
   return (
