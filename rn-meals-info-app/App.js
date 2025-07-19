@@ -1,22 +1,27 @@
-import { StyleSheet, Text, View } from "react-native";
-import CATEGORIES from "./data/dummy-data";
+import { StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import CategoriesScreen from "./screens/CategoriesScreen";
+import MealsOverviewScreen from "./screens/MealsOverviewScreen";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  console.log(CATEGORIES);
   return (
-    <View style={styles.container}>
-      {/* {CATEGORIES.map((item, idx) => (
-        <Text key={idx}>{item.title}</Text>
-      ))} */}
-    </View>
+    <SafeAreaView style={styles.screen}>
+      <StatusBar style="light" />
+      <NavigationContainer>
+        <Stack.Navigator>
+          {/* initialRouteName="" 앱이 시작할 때 어떤 화면이 기본으로 표시될지를 설정 */}
+          <Stack.Screen name="MealsCategories" component={CategoriesScreen} />
+          <Stack.Screen name="MealsOverview" component={MealsOverviewScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  screen: { flex: 1 },
 });
