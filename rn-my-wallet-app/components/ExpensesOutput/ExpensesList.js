@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import ExpenseItem from "./ExpenseItem";
 
 const RenderExpenseItem = ({ item }) => {
-  console.log("Rendering item:", item);
   return <ExpenseItem {...item} />;
 };
 
