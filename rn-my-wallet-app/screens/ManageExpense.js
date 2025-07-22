@@ -2,9 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { useLayoutEffect, useContext } from "react";
 import IconButton from "../components/common/IconButton";
 import { GlobalStyles } from "../constants/styles";
-import { Ionicons } from "@expo/vector-icons";
-import Button from "../components/common/Button";
 import { ExpenseContext } from "../store/expense-context";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 /**
  * 비용을 관리하는 화면
@@ -14,6 +13,9 @@ const ManageExpense = ({ route, navigation }) => {
   const expenseCtx = useContext(ExpenseContext);
   const editedExpenseId = route.params?.expenseId;
   const isEditMode = !!editedExpenseId;
+  const selectedExpense = expenseCtx.expenses.find(
+    (expense) => expense.id === editedExpenseId
+  );
 
   const deleteExpenseHandler = () => {
     expenseCtx.deleteExpense(editedExpenseId);
@@ -24,22 +26,11 @@ const ManageExpense = ({ route, navigation }) => {
     navigation.goBack(); // 모달 비활성화
   };
 
-  const confirmHandler = () => {
+  const confirmHandler = (expenseData) => {
     if (isEditMode) {
-      expenseCtx.updateExpense(editedExpenseId, {
-        // 수정할 지출 항목의 데이터
-        // 예: { title: 'Updated Title', amount: 100, date: new Date() }
-        description: "Updated Title",
-        amount: 500,
-        date: new Date("2025-07-22"),
-      });
+      expenseCtx.updateExpense(editedExpenseId, expenseData);
     } else {
-      expenseCtx.addExpense({
-        // 새로 추가할 지출 항목의 데이터
-        description: "New Expense",
-        amount: 200,
-        date: new Date("2025-07-22"),
-      });
+      expenseCtx.addExpense(expenseData);
     }
     navigation.goBack(); // 모달 비활성화
   };
@@ -53,14 +44,13 @@ const ManageExpense = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonsContainer}>
-        <Button style={styles.button} styleType="flat" onPress={cancelHandler}>
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmHandler}>
-          {isEditMode ? "Update" : "Add"}
-        </Button>
-      </View>
+      <ExpenseForm
+        defaultValues={selectedExpense}
+        submitButtonLabel={isEditMode ? "Update" : "Add"}
+        onCancel={cancelHandler}
+        onSubmit={confirmHandler}
+      />
+      {/* 삭제 버튼 */}
       {isEditMode && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -81,21 +71,11 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary50,
   },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 16,
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
-  },
   deleteContainer: {
     marginTop: 16,
     paddingTop: 8,
     borderTopWidth: 2,
-    borderTopColor: GlobalStyles.colors.primary300,
+    borderTopColor: GlobalStyles.colors.primary700,
     alignItems: "center",
   },
 });
