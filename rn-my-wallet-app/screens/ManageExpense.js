@@ -1,15 +1,24 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useLayoutEffect, useContext } from "react";
+import { useLayoutEffect, useContext, useState } from "react";
 import IconButton from "../components/common/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import { ExpenseContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import LoadingOverlay from "../components/common/LoadingOverlay";
+import ErrorOverlay from "../components/common/ErrorOverlay";
+import {
+  addExpenseApi,
+  updateExpenseApi,
+  deleteExpenseApi,
+} from "../api/expenseApi";
 
 /**
  * 비용을 관리하는 화면
  * - 수정/추가 기능을 위한 페이지
  */
 const ManageExpense = ({ route, navigation }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const expenseCtx = useContext(ExpenseContext);
   const editedExpenseId = route.params?.expenseId;
   const isEditMode = !!editedExpenseId;
@@ -17,22 +26,38 @@ const ManageExpense = ({ route, navigation }) => {
     (expense) => expense.id === editedExpenseId
   );
 
-  const deleteExpenseHandler = () => {
-    expenseCtx.deleteExpense(editedExpenseId);
-    navigation.goBack(); // 모달 비활성화
+  const deleteExpenseHandler = async () => {
+    try {
+      setIsSubmitting(true);
+      await deleteExpenseApi(editedExpenseId);
+      expenseCtx.deleteExpense(editedExpenseId);
+      navigation.goBack(); // 모달 비활성화
+    } catch (error) {
+      setError("Could not delete expense!");
+      setIsSubmitting(false);
+    }
   };
 
   const cancelHandler = () => {
     navigation.goBack(); // 모달 비활성화
   };
 
-  const confirmHandler = (expenseData) => {
-    if (isEditMode) {
-      expenseCtx.updateExpense(editedExpenseId, expenseData);
-    } else {
-      expenseCtx.addExpense(expenseData);
+  const confirmHandler = async (expenseData) => {
+    setIsSubmitting(true);
+    try {
+      if (isEditMode) {
+        expenseCtx.updateExpense(editedExpenseId, expenseData);
+        await updateExpenseApi(editedExpenseId, expenseData);
+      } else {
+        // 새 지출 항목 추가
+        const id = await addExpenseApi(expenseData);
+        expenseCtx.addExpense({ ...expenseData, id: id });
+      }
+      navigation.goBack(); // 모달 비활성화
+    } catch (error) {
+      setError("Could not save expense data!");
+      setIsSubmitting(false);
     }
-    navigation.goBack(); // 모달 비활성화
   };
 
   useLayoutEffect(() => {
@@ -41,6 +66,14 @@ const ManageExpense = ({ route, navigation }) => {
       headerBackTitle: "Back",
     });
   }, [navigation, isEditMode]);
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <View style={styles.container}>

@@ -1,65 +1,9 @@
 import { createContext, useReducer } from "react";
 
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    description: "신발 삼",
-    amount: 60000,
-    date: new Date("2025-07-18"),
-  },
-  {
-    id: "e2",
-    description: "점심 짜장면",
-    amount: 6000,
-    date: new Date("2025-07-19"),
-  },
-  {
-    id: "e3",
-    description: "카페 아아",
-    amount: 4500,
-    date: new Date("2025-07-20"),
-  },
-  {
-    id: "e4",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-  {
-    id: "e5",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-  {
-    id: "e6",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-  {
-    id: "e7",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-  {
-    id: "e8",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-  {
-    id: "e9",
-    description: "카페 라떼",
-    amount: 5500,
-    date: new Date("2025-05-20"),
-  },
-];
-
 export const ExpenseContext = createContext({
   expenses: [],
   addExpense: ({ description, amount, date }) => {},
+  setExpenses: (expenses) => {},
   updateExpense: (id, { description, amount, date }) => {},
   deleteExpense: (id) => {},
 });
@@ -67,8 +11,10 @@ export const ExpenseContext = createContext({
 const expenseReducer = (state, action) => {
   switch (action.type) {
     case "ADD":
-      const id = new Date().toString() + Math.random().toString();
-      return [{ ...action.payload, id: id }, ...state];
+      return [action.payload, ...state];
+    case "SET":
+      const inverted = action.payload.reverse(); // 최신 지출이 위에 오도록 역순 정렬
+      return inverted;
     case "DELETE":
       return state.filter((expense) => expense.id !== action.payload);
     case "UPDATE":
@@ -90,12 +36,18 @@ const expenseReducer = (state, action) => {
 };
 
 const ExpenseContextProvider = ({ children }) => {
-  const [expensesState, dispatch] = useReducer(expenseReducer, DUMMY_EXPENSES);
+  const [expensesState, dispatch] = useReducer(expenseReducer, []);
 
   const addExpense = (expenseData) => {
     dispatch({
       type: "ADD",
       payload: expenseData,
+    });
+  };
+  const setExpenses = (expenses) => {
+    dispatch({
+      type: "SET",
+      payload: expenses,
     });
   };
   const deleteExpense = (id) => {
@@ -114,6 +66,7 @@ const ExpenseContextProvider = ({ children }) => {
   const value = {
     expenses: expensesState,
     addExpense: addExpense,
+    setExpenses: setExpenses,
     updateExpense: updateExpense,
     deleteExpense: deleteExpense,
   };

@@ -31,7 +31,10 @@ const ExpenseForm = ({
   const inputChangeHandler = (inputIdentifier, enteredValue) => {
     setInputs((prevState) => ({
       ...prevState,
-      [inputIdentifier]: { ...prevState[inputIdentifier], value: enteredValue },
+      [inputIdentifier]: {
+        ...prevState[inputIdentifier],
+        value: enteredValue,
+      },
     }));
   };
 
@@ -46,7 +49,7 @@ const ExpenseForm = ({
     const isAmountValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
     const isDateValid =
       expenseData.date.toString() !== "Invalid Date" &&
-      isValidDateYYYYMMDD(expenseData.date.toString());
+      isValidDateYYYYMMDD(inputs.date.value);
     const isDescriptionValid = expenseData.description.trim().length > 0;
 
     if (!isAmountValid || !isDateValid || !isDescriptionValid) {

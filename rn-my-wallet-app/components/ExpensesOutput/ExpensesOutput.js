@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import ExpensesList from "./ExpensesList";
 import ExpensesSummary from "./ExpensesSummary";
+import { GlobalStyles } from "../../constants/styles";
 
 /**
  * 비용 출력 컴포넌트
@@ -8,6 +9,7 @@ import ExpensesSummary from "./ExpensesSummary";
  */
 const ExpensesOutput = ({ expenses, expensesPeriod, fallbackText }) => {
   const hasExpenses = expenses && expenses.length > 0;
+
   return (
     <View style={styles.container}>
       {/* Summary */}
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
   },
   fallbackText: {
     textAlign: "center",
-    color: "white",
+    color: GlobalStyles.colors.primary900,
     fontSize: 16,
     marginTop: 32,
   },
