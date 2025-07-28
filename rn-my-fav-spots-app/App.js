@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import AllPlaces from "./screens/AllPlaces";
 import AddPlace from "./screens/AddPlace";
+import Map from "./screens/Map";
 import IconButton from "./components/common/IconButton";
 import { Colors } from "./constants/colors";
 
@@ -42,6 +43,13 @@ export default function App() {
             component={AddPlace}
             options={{
               title: "장소 추가",
+            }}
+          />
+          <Stack.Screen
+            name="Map"
+            component={Map}
+            options={{
+              title: "장소 선택",
             }}
           />
         </Stack.Navigator>

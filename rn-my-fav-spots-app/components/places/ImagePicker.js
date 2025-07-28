@@ -11,8 +11,9 @@ import OutlinedButton from "../common/OutlinedButton";
 
 /**
  * 이미지 선택 기능을 제공하는 컴포넌트
- * - 카메라 또는 갤러리에서 이미지를 선택할 수 있는 기능 제공
- * - 선택된 이미지를 미리보기로 표시
+ * - 카메라 권한 요청 및 확인
+ * - 카메라를 통해 사진 촬영 기능 제공
+ * - 찍은 이미지 미리보기로 표시
  */
 const ImagePicker = () => {
   const [selectedImageUri, setSelectedImageUri] = useState(""); // 선택된 이미지의 정보객체를 저장할 상태 변수

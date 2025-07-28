@@ -8,7 +8,6 @@ import PlaceForm from "../components/places/PlaceForm";
 const AddPlace = () => {
   return (
     <View>
-      <Text>AddPlace</Text>
       <PlaceForm />
     </View>
   );
