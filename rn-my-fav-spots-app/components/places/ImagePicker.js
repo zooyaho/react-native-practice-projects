@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import { StyleSheet, View, Button, Alert, Image, Text } from "react-native";
 import {
   launchCameraAsync,
@@ -7,6 +7,7 @@ import {
 } from "expo-image-picker";
 
 import { Colors } from "../../constants/colors";
+import { AddPlaceFormContext } from "../../store/add-place-form-context";
 import OutlinedButton from "../common/OutlinedButton";
 
 /**
@@ -16,7 +17,10 @@ import OutlinedButton from "../common/OutlinedButton";
  * - 찍은 이미지 미리보기로 표시
  */
 const ImagePicker = () => {
-  const [selectedImageUri, setSelectedImageUri] = useState(""); // 선택된 이미지의 정보객체를 저장할 상태 변수
+  const addPlaceFormCtx = useContext(AddPlaceFormContext);
+  const [selectedImageUri, setSelectedImageUri] = useState(
+    addPlaceFormCtx.imageUri || ""
+  ); // 선택된 이미지의 정보객체를 저장할 상태 변수
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 
   const verifyPermissions = async () => {
@@ -53,8 +57,9 @@ const ImagePicker = () => {
       aspect: [16, 9],
       quality: 0.5,
     });
-    console.log("📸이미지 정보: ", image);
+    // console.log("📸이미지 정보: ", image);
     setSelectedImageUri(image.assets[0].uri);
+    addPlaceFormCtx.setImageUri(image.assets[0].uri);
   };
 
   let imagePreview = <Text>이미지를 선택해주세요!</Text>;

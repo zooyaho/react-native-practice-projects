@@ -1,7 +1,8 @@
-import { useState, useLayoutEffect, useCallback } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { useState, useLayoutEffect, useCallback, useContext } from "react";
+import { Alert, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import IconButton from "../components/common/IconButton";
+import { AddPlaceFormContext } from "../store/add-place-form-context";
 
 /**
  * 지도를 전체화면으로 표시하는 화면 컴포넌트
@@ -9,6 +10,7 @@ import IconButton from "../components/common/IconButton";
  */
 const Map = ({ navigation }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const addPlaceFormCtx = useContext(AddPlaceFormContext);
 
   const initialRegion = {
     latitude: 37.498095,
@@ -31,9 +33,8 @@ const Map = ({ navigation }) => {
       return;
     }
 
-    navigation.navigate("AddPlace", {
-      pickedLocation: selectedLocation, // { lat, lng }
-    });
+    addPlaceFormCtx.setLocation(selectedLocation);
+    navigation.navigate("AddPlace");
   }, [navigation, selectedLocation]);
 
   useLayoutEffect(() => {
@@ -62,7 +63,6 @@ const Map = ({ navigation }) => {
             longitude: selectedLocation.lng,
           }}
           title="선택된 위치"
-          // description={`위도: ${selectedLocation.lat}, 경도: ${selectedLocation.lng}`}
         />
       )}
     </MapView>

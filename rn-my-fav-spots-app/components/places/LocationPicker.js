@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Alert, Image, Text } from "react-native";
 import {
   useNavigation,
@@ -14,13 +14,17 @@ import {
 import OutlinedButton from "../common/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import { getMapPreview } from "../../utils/location";
+import { AddPlaceFormContext } from "../../store/add-place-form-context";
 
 const LocationPicker = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const isFocused = useIsFocused(); // 현재 화면이 포커스 상태인지 확인
+  const addPlaceFormCtx = useContext(AddPlaceFormContext);
 
-  const [selectedLocation, setSelectedLocation] = useState(); // {lat: number, lng: number}
+  const [selectedLocation, setSelectedLocation] = useState(
+    addPlaceFormCtx.location || null
+  ); // {lat: number, lng: number}
   const [locationPermission, requestLocationPermission] =
     useForegroundPermissions();
 
@@ -43,6 +47,7 @@ const LocationPicker = () => {
     return true; // 권한이 이미 허용된 경우 true 반환
   };
 
+  /* 현재 위치 버튼 클릭 이벤트 */
   const getLocationHandler = async () => {
     const hasPermission = await verifyPermissions(); // 권한 확인 함수 호출
 
@@ -57,23 +62,31 @@ const LocationPicker = () => {
       lat: location.coords.latitude,
       lng: location.coords.longitude,
     });
-  };
-
-  const pickLocationHandler = () => {
-    navigation.navigate("Map", {
-      initialLocation: selectedLocation,
-      onPickLocation: setSelectedLocation,
+    addPlaceFormCtx.setLocation({
+      lat: location.coords.latitude,
+      lng: location.coords.longitude,
     });
   };
 
-  useEffect(() => {
-    const initialLocation = route.params?.pickedLocation; // 초기 위치가 있다면 가져오기
+  /* 위치선택 버튼 클릭 이벤트 */
+  const pickLocationHandler = () => {
+    navigation.navigate("Map");
+  };
 
-    if (isFocused && initialLocation) {
-      // 화면이 포커스 상태이고 초기 위치가 있다면 선택된 위치로 설정
-      setSelectedLocation(initialLocation);
-    }
-  }, [route.params?.pickedLocation, isFocused]);
+  // useEffect(() => {
+  //   if (selectedLocation) {
+  //     onPickLocation(selectedLocation); // 선택된 위치를 부모 컴포넌트에 전달
+  //   }
+  // }, [selectedLocation, onPickLocation]);
+
+  // useEffect(() => {
+  //   const initialLocation = route.params?.pickedLocation; // 초기 위치가 있다면 가져오기
+
+  //   if (isFocused && initialLocation) {
+  //     // 화면이 포커스 상태이고 초기 위치가 있다면 선택된 위치로 설정
+  //     setSelectedLocation(initialLocation);
+  //   }
+  // }, [route.params?.pickedLocation, isFocused]);
 
   let locationPreview = <Text>위치를 선택해주세요!</Text>;
   if (selectedLocation) {

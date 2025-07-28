@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useState, useCallback, useContext } from "react";
 import { StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
 import { Colors } from "../../constants/colors";
 
 import ImagePicker from "./ImagePicker";
 import LocationPicker from "./LocationPicker";
+import Button from "../common/Button";
+import { AddPlaceFormContext } from "../../store/add-place-form-context";
 
 const PlaceForm = () => {
-  const [enteredTitle, setEnteredTitle] = useState("");
+  const addPlaceFormCtx = useContext(AddPlaceFormContext);
+  const [enteredTitle, setEnteredTitle] = useState(addPlaceFormCtx.title || "");
 
   const changeTitleInputHandler = (text) => {
     setEnteredTitle(text);
+    addPlaceFormCtx.setTitle(text);
+  };
+
+  const savePlaceHandler = () => {
+    console.log("장소 저장:", {
+      title: enteredTitle,
+      imageUri: addPlaceFormCtx.imageUri,
+      location: addPlaceFormCtx.location,
+    });
   };
 
   return (
@@ -24,6 +36,7 @@ const PlaceForm = () => {
         />
         <ImagePicker />
         <LocationPicker />
+        <Button onPress={savePlaceHandler}>장소 추가</Button>
       </View>
     </ScrollView>
   );
