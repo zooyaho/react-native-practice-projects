@@ -3,6 +3,7 @@ import { Alert, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import IconButton from "../components/common/IconButton";
 import { AddPlaceFormContext } from "../store/add-place-form-context";
+import { getAddress } from "../utils/location";
 
 /**
  * 지도를 전체화면으로 표시하는 화면 컴포넌트
@@ -27,13 +28,19 @@ const Map = ({ navigation }) => {
     setSelectedLocation({ lat, lng });
   };
 
-  const saveSelectedLocationHandler = useCallback(() => {
+  const saveSelectedLocationHandler = useCallback(async () => {
     if (!selectedLocation) {
       Alert.alert("선택된 위치 없음", "위치를 선택해주세요.");
       return;
     }
+    const address = await getAddress(selectedLocation); // 주소 가져오기
+    if (!address) {
+      Alert.alert("주소 가져오기 실패", "위치의 주소를 가져올 수 없습니다.");
+      return;
+    }
 
     addPlaceFormCtx.setLocation(selectedLocation);
+    addPlaceFormCtx.setAddress(address);
     navigation.navigate("AddPlace");
   }, [navigation, selectedLocation]);
 

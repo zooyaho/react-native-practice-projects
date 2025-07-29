@@ -1,13 +1,21 @@
 import { useState, useCallback, useContext } from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  Alert,
+} from "react-native";
 import { Colors } from "../../constants/colors";
 
 import ImagePicker from "./ImagePicker";
 import LocationPicker from "./LocationPicker";
 import Button from "../common/Button";
 import { AddPlaceFormContext } from "../../store/add-place-form-context";
+import Place from "../../models/places";
 
-const PlaceForm = () => {
+const PlaceForm = ({ onCreatePlace }) => {
   const addPlaceFormCtx = useContext(AddPlaceFormContext);
   const [enteredTitle, setEnteredTitle] = useState(addPlaceFormCtx.title || "");
 
@@ -17,11 +25,20 @@ const PlaceForm = () => {
   };
 
   const savePlaceHandler = () => {
-    console.log("장소 저장:", {
-      title: enteredTitle,
-      imageUri: addPlaceFormCtx.imageUri,
-      location: addPlaceFormCtx.location,
-    });
+    const placeData = new Place(
+      addPlaceFormCtx.title,
+      addPlaceFormCtx.imageUri,
+      addPlaceFormCtx.address,
+      addPlaceFormCtx.location
+    );
+
+    if (!placeData.title || !placeData.imageUri || !placeData.location) {
+      Alert.alert("입력 오류", "모든 필드를 입력해주세요.");
+      return;
+    }
+
+    addPlaceFormCtx.resetForm(); // 폼 초기화
+    onCreatePlace(placeData);
   };
 
   return (

@@ -13,7 +13,7 @@ import {
 
 import OutlinedButton from "../common/OutlinedButton";
 import { Colors } from "../../constants/colors";
-import { getMapPreview } from "../../utils/location";
+import { getAddress, getMapPreview } from "../../utils/location";
 import { AddPlaceFormContext } from "../../store/add-place-form-context";
 
 const LocationPicker = () => {
@@ -58,13 +58,36 @@ const LocationPicker = () => {
 
     const location = await getCurrentPositionAsync();
     // console.log("📍현재 위치 정보: ", location);
+    const lat = location.coords.latitude;
+    const lng = location.coords.longitude;
+
+    if (!lat || !lng) {
+      Alert.alert("위치 정보 오류", "현재 위치를 가져올 수 없습니다.");
+      return;
+    }
+
+    try {
+      const address = await getAddress({
+        lat,
+        lng,
+      });
+      addPlaceFormCtx.setAddress(address);
+    } catch (error) {
+      Alert.alert(
+        "주소 가져오기 실패",
+        "현재 위치의 주소를 가져올 수 없습니다."
+      );
+      return;
+    }
+
     setSelectedLocation({
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
+      lat,
+      lng,
     });
+
     addPlaceFormCtx.setLocation({
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
+      lat,
+      lng,
     });
   };
 

@@ -7,3 +7,5 @@ class Place {
     this.location = location; // { lat: number, lng: number } ex. { lat: 37.7749, lng: -122.4194 }
   }
 }
+
+export default Place;
