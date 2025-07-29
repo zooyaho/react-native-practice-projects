@@ -1,6 +1,8 @@
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 class Place {
   constructor(title, imageUri, address, location) {
-    this.id = new Date().toString() + Math.random().toString();
+    this.id = uuidv4();
     this.title = title;
     this.imageUri = imageUri;
     this.address = address;

@@ -14,7 +14,7 @@ function AllPlaces({ route }) {
 
   useEffect(() => {
     if (isFocused && place) {
-      console.log("새로운 장소가 추가되었습니다:", place);
+      // console.log("새로운 장소가 추가되었습니다:", place);
       setPlaces((prevPlaces) => [...prevPlaces, place]);
     }
   }, [isFocused, place]);

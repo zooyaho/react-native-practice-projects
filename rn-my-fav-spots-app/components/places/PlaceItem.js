@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View, Image } from "react-native";
 import { Colors } from "../../constants/colors";
 
 const PlaceItem = ({ title, imageUri, address, onSelect }) => {
-  console.log("PlaceItem props:", { title, imageUri, address });
+  // console.log("PlaceItem props:", { title, imageUri, address });
   return (
     <Pressable
       onPress={onSelect}

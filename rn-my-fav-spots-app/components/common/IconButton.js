@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     justifyContent: "center",
+    padding: 8,
   },
   pressed: {
     opacity: 0.7,
