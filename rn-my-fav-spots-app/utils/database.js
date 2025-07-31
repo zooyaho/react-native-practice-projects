@@ -63,14 +63,34 @@ export const insertPlaceDB = async (place) => {
     );
   `;
 
-  console.log("SQL문:", sql);
-
   try {
     await db.execAsync(sql);
     // console.log("⭐️ 장소 삽입 성공");
     return true;
   } catch (error) {
     console.error("장소 삽입 실패:", error);
+    throw error;
+  }
+};
+
+/**
+ * 데이터베이스에서 모든 장소를 조회하는 함수
+ * @returns {Promise<Array>} 장소 목록 배열
+ */
+export const fetchPlacesDB = async () => {
+  const db = await getDB();
+  try {
+    const allRows = await db.getAllAsync("SELECT * FROM places");
+    const data = allRows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      imageUri: row.imageUri,
+      address: row.address,
+      location: { lat: row.lat, lng: row.lng },
+    }));
+    return data;
+  } catch (error) {
+    console.error("장소 조회 실패:", error);
     throw error;
   }
 };

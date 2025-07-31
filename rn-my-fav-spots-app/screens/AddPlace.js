@@ -10,7 +10,7 @@ const AddPlace = ({ navigation }) => {
   const createPlaceHandler = async (placeData) => {
     try {
       await insertPlaceDB(placeData);
-      navigation.navigate("AllPlaces", { place: placeData });
+      navigation.navigate("AllPlaces");
     } catch (error) {
       console.error("장소 삽입 실패:", error);
       Alert.alert("장소 저장 실패", "장소를 저장하는데 실패했습니다.");
