@@ -94,3 +94,30 @@ export const fetchPlacesDB = async () => {
     throw error;
   }
 };
+
+/**
+ * ID로 장소를 조회하는 함수
+ * @param {string} id - 장소 ID
+ * @returns {Promise<Object>} 장소 정보 객체
+ */
+export const fetchPlaceByIdDB = async (id) => {
+  const db = await getDB();
+  try {
+    const sql = `SELECT * FROM places WHERE id = '${id.replace(/'/g, "''")}'`;
+
+    const result = await db.getFirstAsync(sql);
+    if (!result) {
+      throw new Error(`장소 ID ${id}에 해당하는 장소가 없습니다.`);
+    }
+    return {
+      id: result.id,
+      title: result.title,
+      imageUri: result.imageUri,
+      address: result.address,
+      location: { lat: result.lat, lng: result.lng },
+    };
+  } catch (error) {
+    console.error("장소 조회 실패:", error);
+    throw error;
+  }
+};

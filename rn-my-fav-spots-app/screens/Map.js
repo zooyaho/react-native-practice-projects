@@ -9,18 +9,25 @@ import { getAddress } from "../utils/location";
  * 지도를 전체화면으로 표시하는 화면 컴포넌트
  * - 지도상에서 장소를 선택하는 등의 기능 제공
  */
-const Map = ({ navigation }) => {
-  const [selectedLocation, setSelectedLocation] = useState(null);
+const Map = ({ navigation, route }) => {
+  const initialLocation = route.params && {
+    lat: route.params.latitude,
+    lng: route.params.longitude,
+  };
+
+  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
   const addPlaceFormCtx = useContext(AddPlaceFormContext);
 
   const initialRegion = {
-    latitude: 37.498095,
-    longitude: 127.02761,
+    latitude: initialLocation?.lat || 37.498095,
+    longitude: initialLocation?.lng || 127.02761,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   }; // 초기 위치 설정 (예: 서울 강남구)
 
   const selectLocationHandler = (event) => {
+    if (initialLocation) return; // 초기 위치가 설정되어 있으면 선택 불가
+
     const lat = event.nativeEvent.coordinate.latitude;
     const lng = event.nativeEvent.coordinate.longitude;
     // console.log("선택된 위치:", { lat, lng });
@@ -45,6 +52,10 @@ const Map = ({ navigation }) => {
   }, [navigation, selectedLocation]);
 
   useLayoutEffect(() => {
+    if (initialLocation) {
+      return;
+    }
+
     navigation.setOptions({
       headerRight: ({ tintColor }) => (
         <IconButton
@@ -55,7 +66,7 @@ const Map = ({ navigation }) => {
         />
       ),
     });
-  }, [navigation, selectedLocation]);
+  }, [navigation, saveSelectedLocationHandler, initialLocation]);
 
   return (
     <MapView

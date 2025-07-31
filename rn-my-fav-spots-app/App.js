@@ -7,6 +7,7 @@ import { Text } from "react-native";
 import AllPlaces from "./screens/AllPlaces";
 import AddPlace from "./screens/AddPlace";
 import Map from "./screens/Map";
+import PlaceDetails from "./screens/PlaceDetails";
 import IconButton from "./components/common/IconButton";
 import { Colors } from "./constants/colors";
 import AddPlaceFormContextProvider from "./store/add-place-form-context";
@@ -71,6 +72,13 @@ export default function App() {
               component={Map}
               options={{
                 title: "장소 선택",
+              }}
+            />
+            <Stack.Screen
+              name="PlaceDetails"
+              component={PlaceDetails}
+              options={{
+                title: "loading place...",
               }}
             />
           </Stack.Navigator>
