@@ -1,9 +1,15 @@
 import { NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Alert, Platform } from "react-native";
+import PushTokenContextProvider, {
+  PushTokenContext,
+} from "./store/push-token-context";
+import { EXPO_PROJECT_ID } from "@env";
 
 import LocalNotify from "./screens/LocalNotify";
 import PushNotify from "./screens/PushNotify";
+import { useEffect, useContext } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +29,41 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function App() {
+function AppContent() {
+  const pushTokenCtx = useContext(PushTokenContext);
+
+  useEffect(() => {
+    const setupNotifications = async () => {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== "granted") {
+        // 알림 권한이 없으면 요청
+        const { status: askStatus } =
+          await Notifications.requestPermissionsAsync();
+
+        if (askStatus !== "granted") {
+          Alert.alert("알림 권한 요청", "알림 권한이 필요합니다.");
+          return;
+        }
+      }
+
+      const pushTokenData = await Notifications.getExpoPushTokenAsync({
+        projectId: EXPO_PROJECT_ID,
+      });
+
+      pushTokenCtx.setPushToken(pushTokenData.data);
+
+      if (Platform.OS === "android") {
+        // 안드로이드에서 알림 채널 설정
+        await Notifications.getNotificationChannelsAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.DEFAULT,
+        });
+      }
+    };
+
+    setupNotifications();
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -31,5 +71,13 @@ export default function App() {
         <Stack.Screen name="PushNotify" component={PushNotify} />
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <PushTokenContextProvider>
+      <AppContent />
+    </PushTokenContextProvider>
   );
 }

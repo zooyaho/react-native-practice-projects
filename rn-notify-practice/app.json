@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "rn-notify-practice",
-    "slug": "rn-notify-practice",
+    "slug": "expo-practice",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,6 +35,12 @@
           "enableBackgroundRemoteNotifications": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "67ec078a-c2a4-4693-ad33-3aa5421656e4"
+      }
+    },
+    "owner": "zooyaho"
   }
 }

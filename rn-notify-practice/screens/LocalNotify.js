@@ -26,16 +26,16 @@ function LocalNotify() {
   };
 
   useEffect(() => {
-    const getPermissions = async () => {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== "granted") {
-        const { status: askStatus } =
-          await Notifications.requestPermissionsAsync();
-        if (askStatus !== "granted") {
-          alert("알림 권한이 필요합니다.");
-        }
-      }
-    };
+    // const getPermissions = async () => {
+    //   const { status } = await Notifications.getPermissionsAsync();
+    //   if (status !== "granted") {
+    //     const { status: askStatus } =
+    //       await Notifications.requestPermissionsAsync();
+    //     if (askStatus !== "granted") {
+    //       alert("알림 권한이 필요합니다.");
+    //     }
+    //   }
+    // };
 
     // 알림 수신 리스너 설정
     // 알림이 들어왔을 때 어떻게 처리할지 설정
@@ -60,7 +60,7 @@ function LocalNotify() {
         );
       }
     );
-    getPermissions();
+    // getPermissions();
 
     return () => {
       // 메모리 누수 방지용으로, 컴포넌트가 사라질 때 이벤트 리스너를 꼭 제거
